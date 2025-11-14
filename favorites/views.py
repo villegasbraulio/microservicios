@@ -156,13 +156,23 @@ def create_favorite(request):
 
 @api_view(['DELETE'])
 def delete_favorite(request, favorite_id):
-    """Eliminar un favorito por ID"""
+    """Eliminar un favorito por ID (ObjectId de MongoDB)"""
     user_id = request.user_id
     collection = get_favorites_collection()
     
     try:
         from bson import ObjectId
-        result = collection.delete_one({'_id': ObjectId(favorite_id), 'user_id': user_id})
+        from bson.errors import InvalidId
+        
+        # Intentar convertir el string a ObjectId
+        try:
+            object_id = ObjectId(favorite_id)
+        except InvalidId:
+            return Response({'error': 'ID de favorito inválido'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Eliminar el favorito
+        result = collection.delete_one({'_id': object_id, 'user_id': user_id})
+        
         if result.deleted_count > 0:
             return Response({'message': 'Favorito eliminado correctamente'}, status=status.HTTP_204_NO_CONTENT)
         else:
