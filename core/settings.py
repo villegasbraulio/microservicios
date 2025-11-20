@@ -32,7 +32,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Debe estar antes de CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,12 +60,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Database - MongoDB using pymongo directly
-# Django ORM no se usa, usamos pymongo directamente en las vistas
 MONGODB_HOST = config('MONGODB_HOST', default='mongodb://localhost:27017/')
-# Extraer el nombre de la base de datos de la URL si está incluido
 if '/' in MONGODB_HOST and MONGODB_HOST.rstrip('/').split('/')[-1]:
-    # Si la URL termina con un nombre de base de datos
     parts = MONGODB_HOST.rstrip('/').split('/')
     if len(parts) > 3:
         MONGODB_NAME = parts[-1]
@@ -75,7 +71,6 @@ if '/' in MONGODB_HOST and MONGODB_HOST.rstrip('/').split('/')[-1]:
 else:
     MONGODB_NAME = config('MONGODB_NAME', default='favorites_db')
 
-# Configuración mínima para Django (usamos SQLite como dummy)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
