@@ -6,3 +6,4 @@ class FavoritesConfig(AppConfig):
     name = 'favorites'
 
 
+

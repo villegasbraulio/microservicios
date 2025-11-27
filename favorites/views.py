@@ -1,11 +1,12 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from datetime import timedelta, datetime
+from datetime import datetime
 from .models import get_favorites_collection, Favorite
 from .serializers import FavoriteCreateSerializer
+from .rabbit_client import validate_article, ArticleValidationError
 
-
+## listar favos
 @api_view(['GET', 'POST'])
 def list_favorites(request):
     if request.method == 'POST':
@@ -18,6 +19,13 @@ def list_favorites(request):
         
         product_id = serializer.validated_data['product_id']
         notes = serializer.validated_data.get('notes', '')
+
+        try:
+            validate_article(product_id, user_id)
+        except ArticleValidationError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return Response({'error': 'No se pudo validar el artículo'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         
         existing = collection.find_one({'user_id': user_id, 'product_id': product_id})
         
@@ -68,6 +76,7 @@ def list_favorites(request):
         'total_pages': total_pages,
     })
 
+## check favo
 
 @api_view(['GET', 'DELETE'])
 def check_favorite(request, product_id):
@@ -97,6 +106,7 @@ def check_favorite(request, product_id):
             'is_favorite': False
         })
 
+## delete favo por id 
 
 @api_view(['DELETE'])
 def delete_favorite(request, favorite_id):
@@ -121,6 +131,7 @@ def delete_favorite(request, favorite_id):
     except Exception as e:
         return Response({'error': f'Error al eliminar favorito: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
+## delete por product
 
 @api_view(['DELETE'])
 def delete_favorite_by_product(request, product_id):
@@ -133,35 +144,7 @@ def delete_favorite_by_product(request, product_id):
     else:
         return Response({'error': 'Favorito no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
-
-@api_view(['GET'])
-def get_stats(request):
-    user_id = request.user_id
-    collection = get_favorites_collection()
-    
-    total_favorites = collection.count_documents({'user_id': user_id})
-    
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
-    recent_count = collection.count_documents({
-        'user_id': user_id,
-        'created_at': {'$gte': thirty_days_ago}
-    })
-    
-    most_recent_cursor = collection.find({'user_id': user_id}).sort('created_at', -1).limit(5)
-    most_recent = [
-        {
-            'product_id': fav.get('product_id'),
-            'created_at': fav.get('created_at').isoformat() if isinstance(fav.get('created_at'), datetime) else str(fav.get('created_at'))
-        }
-        for fav in most_recent_cursor
-    ]
-    
-    return Response({
-        'total_favorites': total_favorites,
-        'recent_count': recent_count,
-        'most_recent': most_recent
-    })
-
+## get popu favos
 
 @api_view(['GET'])
 def get_popular_favorites(request):

@@ -84,15 +84,6 @@ Microservicio REST desarrollado en Django que gestiona la lista de favoritos (wi
 - **Respuesta**: 204 No Content
 - **Autenticación**: Requerida
 
-### 6. Estadísticas del Usuario
-- **GET** `/api/favorites/stats/`
-- **Respuesta**: Total de favoritos, favoritos recientes (30 días), últimos 5 agregados
-- **Autenticación**: Requerida
-
-### 7. Productos Populares (Admin)
-- **GET** `/api/favorites/admin/popular/?limit=10`
-- **Respuesta**: Productos más agregados a favoritos
-- **Autenticación**: Requerida
 
 ## Flujo de Autenticación
 
@@ -105,7 +96,7 @@ Microservicio REST desarrollado en Django que gestiona la lista de favoritos (wi
 
 ## Casos de Uso que Complementa
 
-### 1. Gestión de Lista de Deseos
+### 1. Gestión de Lista de Favoritso
 - **Actor**: Usuario autenticado
 - **Flujo**: 
   - Usuario navega catálogo → Ve producto interesante → Agrega a favoritos
@@ -120,14 +111,7 @@ Microservicio REST desarrollado en Django que gestiona la lista de favoritos (wi
   - Muestra indicador visual (corazón lleno/vacío) según estado
 - **Beneficio**: Feedback visual inmediato al usuario
 
-### 3. Análisis de Engagement
-- **Actor**: Administrador
-- **Flujo**: 
-  - Consulta productos más populares (más veces agregados a favoritos)
-  - Analiza estadísticas de uso de favoritos
-- **Beneficio**: Métricas de negocio, identificación de productos de interés
-
-### 4. Personalización de Experiencia
+### 3. Personalización de Experiencia
 - **Actor**: Sistema
 - **Flujo**: 
   - Sistema puede usar historial de favoritos para recomendaciones

@@ -17,6 +17,10 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
+APPEND_SLASH = False
+
+APPEND_SLASH = False
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -104,6 +108,7 @@ REST_FRAMEWORK = {
 
 # Auth Service URL
 AUTH_SERVICE_URL = config('AUTH_SERVICE_URL', default='http://localhost:3000')
+RABBIT_URL = config('RABBIT_URL', default='amqp://guest:guest@localhost:5672/')
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [

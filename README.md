@@ -6,7 +6,8 @@ Microservicio para gestionar la lista de favoritos de los usuarios.
 
 1. **Python 3.11 o superior** instalado
 2. **MongoDB** corriendo en `localhost:27017`
-3. **Servicio de Auth** corriendo en `http://localhost:3000`
+3. **RabbitMQ** corriendo en `amqp://guest:guest@localhost:5672/` (puedes levantarlo con Docker `-p 5672:5672 -p 15672:15672 rabbitmq:3.11-management`)
+4. **Servicio de Auth** corriendo en `http://localhost:3000`
 
 ## Instalación y Configuración
 
@@ -32,6 +33,7 @@ El servicio usa las siguientes variables de entorno (opcionales, tienen valores 
 ```bash
 export MONGODB_HOST=mongodb://localhost:27017/
 export MONGODB_NAME=favorites_db
+export RABBIT_URL=amqp://guest:guest@localhost:5672/
 export AUTH_SERVICE_URL=http://localhost:3000
 export DJANGO_SETTINGS_MODULE=core.settings
 ```
@@ -92,12 +94,6 @@ Authorization: Bearer <token>
 ### Eliminar un favorito por product_id
 ```
 DELETE /api/favorites/product/<product_id>/
-Authorization: Bearer <token>
-```
-
-### Obtener estadísticas
-```
-GET /api/favorites/stats/
 Authorization: Bearer <token>
 ```
 
@@ -176,5 +172,4 @@ Para ver logs detallados, ejecuta:
 ```bash
 python manage.py runserver 0.0.0.0:3006 --verbosity 2
 ```
-
 

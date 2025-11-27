@@ -1,6 +1,6 @@
 import requests
-from django.conf import settings
-from django.http import JsonResponse
+from django.conf import settings  # pyright: ignore[reportMissingImports]
+from django.http import JsonResponse  # pyright: ignore[reportMissingImports]
 
 
 class AuthMiddleware:
